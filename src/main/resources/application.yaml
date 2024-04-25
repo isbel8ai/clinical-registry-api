@@ -1,0 +1,18 @@
+spring:
+  security:
+    user:
+      password: ${CRA_ADMIN_PASSWORD}
+  #  datasource:
+  #    url: jdbc:postgresql://${CRA_POSTGRES_HOST}:${CRA_POSTGRES_PORT}/${CRA_POSTGRES_DB}
+  #    username: ${CRA_POSTGRES_USER}
+  #    password: ${CRA_POSTGRES_PASS}
+
+  jpa:
+    generate-ddl: true
+    hibernate.ddl-auto: update
+#    properties:
+#      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+
+
+jwt.secret: ${CRA_JWT_SECRET}
+
