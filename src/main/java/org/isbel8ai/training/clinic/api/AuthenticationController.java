@@ -27,7 +27,7 @@ public class AuthenticationController {
     @PostMapping(path = "token",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    AuthResponse getToken(@RequestBody AuthRequest authRequest) {
+    public AuthResponse getToken(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.username(), authRequest.password()));
         if (authentication.isAuthenticated()) {

@@ -6,7 +6,6 @@ import org.isbel8ai.training.clinic.api.dto.AccountInfo;
 import org.isbel8ai.training.clinic.api.dto.NewAccountDetails;
 import org.isbel8ai.training.clinic.api.dto.PasswordUpdate;
 import org.isbel8ai.training.clinic.model.Account;
-import org.isbel8ai.training.clinic.model.Role;
 import org.isbel8ai.training.clinic.service.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,13 +42,8 @@ public class AccountController {
     @GetMapping(value = "me", produces = MediaType.APPLICATION_JSON_VALUE)
     public AccountInfo getCurrentAccount() {
         String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-
         if (username == null) {
             throw new UsernameNotFoundException("No valid logged in user");
-        }
-
-        if ("admin".equals(username)) {
-            return new AccountInfo(0L, "Admin", null, Role.ADMIN);
         }
 
         return new AccountInfo(accountService.getAccountByEmail(username));
@@ -71,8 +65,8 @@ public class AccountController {
     }
 
     @PutMapping(value = "{accountId}/password", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void setAccountPassword(@PathVariable long accountId, @RequestBody String newPassword) {
-        accountService.setAccountPassword(accountId, newPassword);
+    public void setAccountPassword(@PathVariable long accountId, @RequestBody PasswordUpdate passwordUpdate) {
+        accountService.setAccountPassword(accountId, passwordUpdate.newPassword());
     }
 
 }

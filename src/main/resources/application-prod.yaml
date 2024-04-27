@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${CRA_POSTGRES_HOST}:${CRA_POSTGRES_PORT}/${CRA_POSTGRES_DB}
+    username: ${CRA_POSTGRES_USER}
+    password: ${CRA_POSTGRES_PASS}
+  jpa.properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+
