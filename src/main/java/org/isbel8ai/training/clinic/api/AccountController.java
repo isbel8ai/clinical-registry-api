@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("accounts")
-@SecurityRequirement(name = "Bearer Authentication")
+@SecurityRequirement(name = "Authorization")
 public class AccountController {
 
     private static final Logger log = LoggerFactory.getLogger(AccountController.class);

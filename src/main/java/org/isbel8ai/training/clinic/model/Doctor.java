@@ -11,12 +11,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Role {
+public class Doctor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique=true)
-    private String name;
+    @Column(nullable = false, unique = true)
+    private String licenceCode;
+
+    @OneToOne
+    private Account account;
 }
