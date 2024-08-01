@@ -35,7 +35,7 @@ public class AccountController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public AccountInfo createAccount(@RequestBody NewAccountDetails newAccountDetails) {
-        log.info("Creating new worker: {}", newAccountDetails);
+        log.info("Creating new account: {}", newAccountDetails);
         return new AccountInfo(accountService.addAccount(newAccountDetails.toAccount()));
     }
 
@@ -43,7 +43,7 @@ public class AccountController {
     public AccountInfo getCurrentAccount() {
         String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         if (username == null) {
-            throw new UsernameNotFoundException("No valid logged in user");
+            throw new UsernameNotFoundException("No valid account logged in");
         }
 
         return new AccountInfo(accountService.getAccountByEmail(username));

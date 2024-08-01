@@ -1,14 +1,12 @@
 package org.isbel8ai.training.clinic.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Data
 @Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Account {
@@ -23,10 +21,10 @@ public class Account {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
+    private String password;
+
     @ManyToOne
     @JoinColumn(nullable = false)
     private Role role;
-
-    @Column(nullable = false)
-    private String password;
 }

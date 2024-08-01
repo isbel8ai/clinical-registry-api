@@ -5,3 +5,9 @@ spring:
     password: ${CRA_POSTGRES_PASS}
   jpa.properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
 
+  flyway:
+    user: ${CRA_POSTGRES_USER}
+    password: ${CRA_POSTGRES_PASS}
+    placeholders:
+      admin_username: ${CRA_ADMIN_USERNAME}
+      admin_password: ${CRA_ADMIN_PASSWORD}

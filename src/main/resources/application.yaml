@@ -7,5 +7,9 @@ spring:
     generate-ddl: true
     hibernate.ddl-auto: update
 
-jwt.secret: ${CRA_JWT_SECRET}
+  flyway:
+    placeholders:
+      admin_username: ${CRA_ADMIN_USERNAME}
+      admin_password: ${CRA_ADMIN_PASSWORD}
 
+jwt.secret: ${CRA_JWT_SECRET}
