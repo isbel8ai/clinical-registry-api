@@ -1,8 +1,8 @@
-package org.isbel8ai.training.clinic.api;
+package org.isbel8ai.training.clinic.rest;
 
 import lombok.RequiredArgsConstructor;
-import org.isbel8ai.training.clinic.api.dto.AuthRequest;
-import org.isbel8ai.training.clinic.api.dto.AuthResponse;
+import org.isbel8ai.training.clinic.rest.dto.AuthRequest;
+import org.isbel8ai.training.clinic.rest.dto.AuthResponse;
 import org.isbel8ai.training.clinic.service.JwtService;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,7 +29,8 @@ public class AuthenticationController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public AuthResponse getToken(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.username(), authRequest.password()));
+                new UsernamePasswordAuthenticationToken(authRequest.username(), authRequest.password())
+        );
         if (authentication.isAuthenticated()) {
             return new AuthResponse(jwtService.generateToken(authRequest.username()));
         } else {

@@ -1,11 +1,11 @@
-package org.isbel8ai.training.clinic.api;
+package org.isbel8ai.training.clinic.rest;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.isbel8ai.training.clinic.api.dto.AccountInfo;
-import org.isbel8ai.training.clinic.api.dto.NewAccountDetails;
-import org.isbel8ai.training.clinic.api.dto.PasswordUpdate;
 import org.isbel8ai.training.clinic.model.Account;
+import org.isbel8ai.training.clinic.rest.dto.AccountInfo;
+import org.isbel8ai.training.clinic.rest.dto.NewAccountDetails;
+import org.isbel8ai.training.clinic.rest.dto.PasswordUpdate;
 import org.isbel8ai.training.clinic.service.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

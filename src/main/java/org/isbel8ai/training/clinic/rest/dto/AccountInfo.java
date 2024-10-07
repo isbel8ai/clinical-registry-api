@@ -1,4 +1,4 @@
-package org.isbel8ai.training.clinic.api.dto;
+package org.isbel8ai.training.clinic.rest.dto;
 
 import org.isbel8ai.training.clinic.model.Account;
 import org.isbel8ai.training.clinic.model.Role;

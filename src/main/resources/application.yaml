@@ -1,15 +1,21 @@
 spring:
-  profiles.active: prod
-  security.user:
-    name: ${CRA_ADMIN_USERNAME}
-    password: ${CRA_ADMIN_PASSWORD}
-  jpa:
-    generate-ddl: true
-    hibernate.ddl-auto: update
+  application:
+    name: clinical-registry-api
+
+  security:
+    user:
+      name: ${CRA_ADMIN_USERNAME}
+      password: ${CRA_ADMIN_PASSWORD}
 
   flyway:
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
     placeholders:
-      admin_username: ${CRA_ADMIN_USERNAME}
-      admin_password: ${CRA_ADMIN_PASSWORD}
+      admin_username: ${spring.security.user.name}
+      admin_password: ${spring.security.user.password}
 
-jwt.secret: ${CRA_JWT_SECRET}
+  profiles:
+    active: prod
+
+jwt:
+  secret: ${CRA_JWT_SECRET}

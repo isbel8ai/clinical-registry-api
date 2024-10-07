@@ -1,4 +1,4 @@
-package org.isbel8ai.training.clinic.api;
+package org.isbel8ai.training.clinic.rest;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
