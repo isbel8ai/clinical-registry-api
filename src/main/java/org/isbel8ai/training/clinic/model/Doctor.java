@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Builder
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Doctor {
@@ -16,7 +16,7 @@ public class Doctor {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String licenceCode;
+    private String licenceNumber;
 
     @OneToOne
     private Account account;

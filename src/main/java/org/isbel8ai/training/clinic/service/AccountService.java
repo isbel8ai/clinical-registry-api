@@ -13,7 +13,7 @@ public interface AccountService {
 
     Account getAccountByEmail(String email);
 
-    Account addAccount(Account account);
+    Account createAccount(Account account);
 
     void updateAccountInfo(long id, String fullName, String email, Role role);
 

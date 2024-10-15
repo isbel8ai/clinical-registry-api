@@ -1,20 +1,10 @@
 package org.isbel8ai.training.clinic.model;
 
-import jakarta.persistence.*;
-import lombok.*;
-
-@Entity
-@Builder
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class Role {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(unique = true)
-    private String name;
+public enum Role {
+    ADMIN,
+    DIRECTOR,
+    DOCTOR,
+    NURSE,
+    ASSISTANT,
+    PATIENT,
 }

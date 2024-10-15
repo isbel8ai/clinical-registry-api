@@ -1,9 +1,7 @@
-version: '3.9'
-
 services:
   db:
     image: postgres:alpine
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ${CRA_POSTGRES_DB}
       POSTGRES_USER: ${CRA_POSTGRES_USER}
@@ -16,7 +14,7 @@ services:
   app:
     build:
       context: .
-    restart: always
+    restart: unless-stopped
     depends_on:
       - db
     environment:

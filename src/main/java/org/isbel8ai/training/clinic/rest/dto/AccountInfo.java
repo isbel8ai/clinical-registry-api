@@ -10,6 +10,11 @@ public record AccountInfo(
         Role role
 ) {
     public AccountInfo(Account account) {
-        this(account.getId(), account.getFullName(), account.getEmail(), account.getRole());
+        this(
+                account.getId(),
+                account.getFullName(),
+                account.getEmail(),
+                account.getRole()
+        );
     }
 }

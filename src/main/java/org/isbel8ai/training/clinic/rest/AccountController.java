@@ -4,8 +4,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.isbel8ai.training.clinic.model.Account;
 import org.isbel8ai.training.clinic.rest.dto.AccountInfo;
-import org.isbel8ai.training.clinic.rest.dto.NewAccountDetails;
-import org.isbel8ai.training.clinic.rest.dto.PasswordUpdate;
+import org.isbel8ai.training.clinic.rest.dto.NewAccountRequest;
+import org.isbel8ai.training.clinic.rest.dto.PasswordUpdateRequest;
 import org.isbel8ai.training.clinic.service.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +34,9 @@ public class AccountController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public AccountInfo createAccount(@RequestBody NewAccountDetails newAccountDetails) {
-        log.info("Creating new account: {}", newAccountDetails);
-        return new AccountInfo(accountService.addAccount(newAccountDetails.toAccount()));
+    public AccountInfo createAccount(@RequestBody NewAccountRequest newAccountRequest) {
+        log.info("Creating new account: {}", newAccountRequest);
+        return new AccountInfo(accountService.createAccount(newAccountRequest.toAccount()));
     }
 
     @GetMapping(value = "me", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -60,13 +60,13 @@ public class AccountController {
     }
 
     @PatchMapping(value = "{accountId}/password", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void updateAccountPassword(@PathVariable long accountId, @RequestBody PasswordUpdate passwordUpdate) {
-        accountService.updateAccountPassword(accountId, passwordUpdate.currentPassword(), passwordUpdate.newPassword());
+    public void updateAccountPassword(@PathVariable long accountId, @RequestBody PasswordUpdateRequest passwordUpdateRequest) {
+        accountService.updateAccountPassword(accountId, passwordUpdateRequest.currentPassword(), passwordUpdateRequest.newPassword());
     }
 
     @PutMapping(value = "{accountId}/password", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void setAccountPassword(@PathVariable long accountId, @RequestBody PasswordUpdate passwordUpdate) {
-        accountService.setAccountPassword(accountId, passwordUpdate.newPassword());
+    public void setAccountPassword(@PathVariable long accountId, @RequestBody PasswordUpdateRequest passwordUpdateRequest) {
+        accountService.setAccountPassword(accountId, passwordUpdateRequest.newPassword());
     }
 
 }
