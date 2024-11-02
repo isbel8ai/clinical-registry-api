@@ -6,6 +6,7 @@ import org.isbel8ai.training.clinic.model.Account;
 import org.isbel8ai.training.clinic.model.Patient;
 import org.isbel8ai.training.clinic.model.Role;
 import org.isbel8ai.training.clinic.repository.PatientRepository;
+import org.isbel8ai.training.clinic.rest.dto.NewPatientRequest;
 import org.isbel8ai.training.clinic.service.AccountService;
 import org.isbel8ai.training.clinic.service.PatientService;
 import org.springframework.stereotype.Service;
@@ -19,19 +20,28 @@ public class PatientServiceImpl implements PatientService {
     private final PatientRepository patientRepository;
 
     @Override
-    public Patient createPatient(String fullName, String email) {
+    public Patient createPatient(NewPatientRequest newPatientRequest) {
         Account account = Account.builder()
-                .fullName(fullName)
-                .email(email)
-                .role(Role.PATIENT)
+                .fullName(newPatientRequest.fullName())
+                .email(newPatientRequest.email())
                 .password(RandomStringUtils.random(16))
+                .role(Role.PATIENT)
                 .build();
-        accountService.createAccount(account);
-        return patientRepository.save(Patient.builder().account(account).build());
+
+        Patient patient = Patient.builder()
+                .account(accountService.createAccount(account))
+                .build();
+
+        return patientRepository.save(patient);
     }
 
     @Override
-    public Patient getPatientById(Long patientId) {
+    public Patient getPatient(Long patientId) {
         return patientRepository.findById(patientId).orElseThrow();
+    }
+
+    @Override
+    public Patient getPatientByEmail(String email) {
+        return patientRepository.findByAccountEmail(email).orElseThrow();
     }
 }

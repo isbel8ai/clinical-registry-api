@@ -2,10 +2,8 @@ spring:
   application:
     name: clinical-registry-api
 
-  security:
-    user:
-      name: ${CRA_ADMIN_USERNAME}
-      password: ${CRA_ADMIN_PASSWORD}
+  profiles:
+    active: prod
 
   flyway:
     user: ${spring.datasource.username}
@@ -14,8 +12,13 @@ spring:
       admin_username: ${spring.security.user.name}
       admin_password: ${spring.security.user.password}
 
-  profiles:
-    active: prod
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  security:
+    user:
+      name: ${CRA_ADMIN_USERNAME}
+      password: ${CRA_ADMIN_PASSWORD}
 
 jwt:
   secret: ${CRA_JWT_SECRET}

@@ -12,8 +12,7 @@ import lombok.*;
 public class Patient {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "patient_id_generator")
-    @SequenceGenerator(name = "patient_id_generator", sequenceName = "patient_id_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne

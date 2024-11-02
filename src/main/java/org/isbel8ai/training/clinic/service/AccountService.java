@@ -1,23 +1,17 @@
 package org.isbel8ai.training.clinic.service;
 
 import org.isbel8ai.training.clinic.model.Account;
-import org.isbel8ai.training.clinic.model.Role;
-
-import java.util.List;
+import org.isbel8ai.training.clinic.rest.dto.PasswordUpdateRequest;
 
 public interface AccountService {
 
-    List<Account> getAllAccounts();
-
-    Account getAccountById(long id);
+    Account getAccount(long id);
 
     Account getAccountByEmail(String email);
 
     Account createAccount(Account account);
 
-    void updateAccountInfo(long id, String fullName, String email, Role role);
-
-    void updateAccountPassword(long id, String currentPassword, String newPassword);
+    void updateAccountPassword(String email, PasswordUpdateRequest passwordUpdateRequest);
 
     void setAccountPassword(long id, String newPassword);
 
