@@ -12,13 +12,20 @@ spring:
       admin_username: ${spring.security.user.name}
       admin_password: ${spring.security.user.password}
 
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-
   security:
     user:
       name: ${CRA_ADMIN_USERNAME}
       password: ${CRA_ADMIN_PASSWORD}
+
+  mail:
+    host: ${CRA_SMTP_SERVER}
+    port: ${CRA_SMTP_PORT}
+    username: ${CRA_SMTP_USERNAME}
+    password: ${CRA_SMTP_PASSWORD}
+    properties:
+      mail.smtp.from: ${CRA_SMTP_FROM_EMAIL}
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
 
 jwt:
   secret: ${CRA_JWT_SECRET}

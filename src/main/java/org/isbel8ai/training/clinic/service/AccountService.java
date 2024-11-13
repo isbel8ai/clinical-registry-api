@@ -15,5 +15,7 @@ public interface AccountService {
 
     void setAccountPassword(long id, String newPassword);
 
+    void setAccountPassword(String email, String newPassword);
+
     void deleteAccount(long id);
 }

@@ -20,7 +20,7 @@ import org.isbel8ai.training.clinic.model.Role;
 import org.isbel8ai.training.clinic.repository.AccountRepository;
 import org.isbel8ai.training.clinic.repository.PatientRepository;
 import org.isbel8ai.training.clinic.rest.dto.AuthenticationResponse;
-import org.isbel8ai.training.clinic.service.JwtService;
+import org.isbel8ai.training.clinic.service.JwtTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -39,7 +39,7 @@ public class CommonStepDefinition {
 
     private final TestRestTemplate restTemplate;
 
-    private final JwtService jwtService;
+    private final JwtTokenService jwtService;
 
     private final AccountRepository accountRepository;
 
@@ -87,7 +87,7 @@ public class CommonStepDefinition {
 
     @Given("the client is authenticated as {string}")
     public void authenticate(String username) {
-        String token = jwtService.generateToken(username);
+        String token = jwtService.generateUserToken(username);
         configureRestTemplate(token);
     }
 

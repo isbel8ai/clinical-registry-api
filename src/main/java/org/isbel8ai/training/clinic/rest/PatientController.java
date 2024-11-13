@@ -2,6 +2,7 @@ package org.isbel8ai.training.clinic.rest;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.PropertyValueException;
 import org.isbel8ai.training.clinic.rest.dto.NewPatientRequest;
 import org.isbel8ai.training.clinic.rest.dto.PatientInfo;
@@ -13,8 +14,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("patients")
@@ -27,6 +30,11 @@ public class PatientController {
     @ResponseStatus(HttpStatus.CREATED)
     public PatientInfo createPatient(@RequestBody NewPatientRequest patientRequest) {
         return new PatientInfo(patientService.createPatient(patientRequest));
+    }
+
+    @GetMapping
+    public List<PatientInfo> getAllPatients() {
+        return patientService.getAllPatients().stream().map(PatientInfo::new).toList();
     }
 
     @GetMapping("{patientId}")
@@ -43,9 +51,13 @@ public class PatientController {
 
     @ExceptionHandler({PropertyValueException.class, DataIntegrityViolationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    void handleBadRequests(RuntimeException e) {}
+    void handleBadRequests(RuntimeException e) {
+        log.warn(e.getMessage());
+    }
 
     @ExceptionHandler({NoSuchElementException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    void handleNotFoundExceptions(RuntimeException e) {}
+    void handleNotFoundExceptions(RuntimeException e) {
+        log.warn(e.getMessage());
+    }
 }

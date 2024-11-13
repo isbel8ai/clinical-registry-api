@@ -17,6 +17,11 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
 
     @Override
+    public Account createAccount(Account account) {
+        return accountRepository.save(account);
+    }
+
+    @Override
     public Account getAccount(long id) {
         return accountRepository.findById(id).orElseThrow();
     }
@@ -24,11 +29,6 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account getAccountByEmail(String email) {
         return accountRepository.findByEmail(email).orElseThrow();
-    }
-
-    @Override
-    public Account createAccount(Account account) {
-        return accountRepository.save(account);
     }
 
     @Override
@@ -44,6 +44,13 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void setAccountPassword(long id, String newPassword) {
         Account account = accountRepository.findById(id).orElseThrow();
+        account.setPassword(newPassword);
+        accountRepository.save(account);
+    }
+
+    @Override
+    public void setAccountPassword(String email, String newPassword) {
+        Account account = accountRepository.findByEmail(email).orElseThrow();
         account.setPassword(newPassword);
         accountRepository.save(account);
     }

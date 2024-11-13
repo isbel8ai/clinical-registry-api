@@ -11,6 +11,8 @@ import org.isbel8ai.training.clinic.service.AccountService;
 import org.isbel8ai.training.clinic.service.PatientService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PatientServiceImpl implements PatientService {
@@ -24,7 +26,7 @@ public class PatientServiceImpl implements PatientService {
         Account account = Account.builder()
                 .fullName(newPatientRequest.fullName())
                 .email(newPatientRequest.email())
-                .password(RandomStringUtils.random(16))
+                .password(RandomStringUtils.randomAlphanumeric(16))
                 .role(Role.PATIENT)
                 .build();
 
@@ -43,5 +45,10 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Patient getPatientByEmail(String email) {
         return patientRepository.findByAccountEmail(email).orElseThrow();
+    }
+
+    @Override
+    public List<Patient> getAllPatients() {
+        return patientRepository.findAll();
     }
 }
