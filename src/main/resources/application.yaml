@@ -1,31 +1,29 @@
 spring:
-  application:
-    name: clinical-registry-api
+  profiles.active: prod
+  application.name: clinical-registry-api
 
-  profiles:
-    active: prod
+  security.user:
+    name: ${CRA_ADMIN_USERNAME}
+    password: ${CRA_ADMIN_PASSWORD}
 
   flyway:
+    enabled: true
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
     placeholders:
       admin_username: ${spring.security.user.name}
       admin_password: ${spring.security.user.password}
 
-  security:
-    user:
-      name: ${CRA_ADMIN_USERNAME}
-      password: ${CRA_ADMIN_PASSWORD}
+  jpa.open-in-view: false
 
   mail:
-    host: ${CRA_SMTP_SERVER}
-    port: ${CRA_SMTP_PORT}
-    username: ${CRA_SMTP_USERNAME}
-    password: ${CRA_SMTP_PASSWORD}
+    host: ${CRA_SMTP_SERVER:localhost}
+    port: ${CRA_SMTP_PORT:1025}
+    username: ${CRA_SMTP_USERNAME:}
+    password: ${CRA_SMTP_PASSWORD:}
     properties:
       mail.smtp.from: ${CRA_SMTP_FROM_EMAIL}
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
 
-jwt:
-  secret: ${CRA_JWT_SECRET}
+jwt.secret: ${CRA_JWT_SECRET}

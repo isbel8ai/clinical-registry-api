@@ -1,6 +1,5 @@
 package org.isbel8ai.training.clinic.steps;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.datatable.DataTable;
@@ -10,9 +9,9 @@ import io.cucumber.java.DefaultParameterTransformer;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.assertj.core.api.Assertions;
 import org.isbel8ai.training.clinic.model.Account;
@@ -22,22 +21,18 @@ import org.isbel8ai.training.clinic.repository.PatientRepository;
 import org.isbel8ai.training.clinic.rest.dto.AuthenticationResponse;
 import org.isbel8ai.training.clinic.service.JwtTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.JdkClientHttpRequestFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.test.web.servlet.client.ExchangeResult;
+import org.springframework.test.web.servlet.client.RestTestClient;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Type;
-import java.util.List;
 import java.util.Map;
-
 
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CommonStepDefinition {
 
-    private final TestRestTemplate restTemplate;
+    private final RestTestClient restTestClient;
 
     private final JwtTokenService jwtService;
 
@@ -47,26 +42,23 @@ public class CommonStepDefinition {
 
     private final EntityManager entityManager;
 
-    private final ObjectMapper objectMapper;
+    private String token = null;
 
-    private ResponseEntity<String> lastResponse;
+    private ExchangeResult lastResponse;
 
-    @PostConstruct
-    void setup() {
-        restTemplate.getRestTemplate().setRequestFactory(new JdkClientHttpRequestFactory());
-    }
 
     @DefaultParameterTransformer
     @DefaultDataTableCellTransformer
     @DefaultDataTableEntryTransformer
     public Object transformer(Object fromValue, Type toValueType) {
+        ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.convertValue(fromValue, objectMapper.constructType(toValueType));
     }
 
     @Given("the application is running")
     @Transactional
     public void initializeData() {
-        restTemplate.getRestTemplate().setInterceptors(List.of());
+        token = null;
         patientRepository.deleteAll();
         accountRepository.deleteAll();
         entityManager.createNativeQuery("ALTER TABLE PATIENT ALTER COLUMN ID RESTART WITH 1").executeUpdate();
@@ -79,7 +71,7 @@ public class CommonStepDefinition {
                 Account.builder()
                         .email("admin")
                         .fullName("Administrator")
-                        .password(RandomStringUtils.random(16))
+                        .password(RandomStringUtils.insecure().next(16))
                         .role(Role.ADMIN)
                         .build()
         );
@@ -87,63 +79,72 @@ public class CommonStepDefinition {
 
     @Given("the client is authenticated as {string}")
     public void authenticate(String username) {
-        String token = jwtService.generateUserToken(username);
-        configureRestTemplate(token);
+        token = jwtService.generateUserToken(username);
     }
 
+    @SneakyThrows
     @Given("the client is authenticated with requested token")
-    public void theClientIsAuthenticatedWithLastResponse() throws JsonProcessingException {
-        String token = objectMapper.readValue(lastResponse.getBody(), AuthenticationResponse.class).accessToken();
-        configureRestTemplate(token);
+    public void theClientIsAuthenticatedWithLastResponse() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        token = objectMapper.readValue(lastResponse.getResponseBodyContent(), AuthenticationResponse.class).accessToken();
     }
 
     @Given("the client is not authenticated")
     public void theClientIsNotAuthenticated() {
-        restTemplate.getRestTemplate().setInterceptors(List.of());
+        token = null;
     }
 
     @When("the client makes a GET request to {string}")
     public void theClientMakesAGETRequestTo(String path) {
-        lastResponse = restTemplate.getForEntity(path, String.class);
+        lastResponse = restTestClient.get().uri(path)
+                .headers(this::setAuthentication)
+                .exchange()
+                .returnResult();
     }
 
     @When("the client makes a POST request to {string}")
     public void theClientMakesAPOSTRequestTo(String path, DataTable dataTable) {
-        lastResponse = restTemplate.postForEntity(path, dataTable.asMap(), String.class);
+        lastResponse = restTestClient.post().uri(path)
+                .headers(this::setAuthentication)
+                .body(dataTable.asMap())
+                .exchange()
+                .returnResult();
     }
 
     @When("the client makes a PATCH request to {string}")
     public void theClientMakesAPATCHRequestTo(String path, DataTable dataTable) {
-        executeHttpRequest(path, HttpMethod.PATCH, dataTable);
+        lastResponse = restTestClient.patch().uri(path)
+                .headers(this::setAuthentication)
+                .body(dataTable.asMap())
+                .exchange()
+                .returnResult();
     }
 
     @When("the client makes a PUT request to {string}")
     public void theClientMakesAPUTRequestTo(String path, DataTable dataTable) {
-        executeHttpRequest(path, HttpMethod.PUT, dataTable);
+        lastResponse = restTestClient.put().uri(path)
+                .headers(this::setAuthentication)
+                .body(dataTable.asMap())
+                .exchange()
+                .returnResult();
     }
 
     @Then("the response status code should be {int}")
     public void theResponseCodeShouldBe(int statusCode) {
-        Assertions.assertThat(lastResponse.getStatusCode().value()).isEqualTo(statusCode);
+        Assertions.assertThat(lastResponse.getStatus().value()).isEqualTo(statusCode);
     }
 
+    @SneakyThrows
     @Then("the response should contain")
-    public void theResponseShouldContain(DataTable dataTable) throws JsonProcessingException {
-        Map<String, Object> result = objectMapper.readValue(lastResponse.getBody(), new TypeReference<>() {});
+    public void theResponseShouldContain(DataTable dataTable) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> result = objectMapper.readValue(lastResponse.getResponseBodyContent(), new TypeReference<>() {});
         Map<String, Object> expected = dataTable.asMap(String.class, Object.class);
         Assertions.assertThat(result.entrySet()).containsAll(expected.entrySet());
     }
 
-    private void configureRestTemplate(String token) {
-        restTemplate.getRestTemplate().setInterceptors(List.of((request, body, execution) -> {
-            request.getHeaders().setBearerAuth(token);
-            return execution.execute(request, body);
-        }));
-    }
-
-    private void executeHttpRequest(String path, HttpMethod httpMethod, DataTable dataTable) {
-        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(dataTable.asMap(String.class, Object.class));
-        lastResponse = restTemplate.exchange(path, httpMethod, requestEntity, String.class);
+    private void setAuthentication(HttpHeaders headers) {
+        if (token != null) headers.setBearerAuth(token);
     }
 }
 

@@ -3,6 +3,7 @@ package org.isbel8ai.training.clinic.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.isbel8ai.training.clinic.model.Account;
 import org.isbel8ai.training.clinic.service.AccountService;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,10 +16,10 @@ import org.springframework.stereotype.Service;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
-
     private final AccountService accountService;
 
     @Override
+    @NullMarked
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Account account = accountService.getAccountByEmail(username);
         return User.builder()

@@ -1,5 +1,15 @@
 spring:
   datasource:
-    url: jdbc:postgresql://${CRA_POSTGRES_HOST}:${CRA_POSTGRES_PORT}/${CRA_POSTGRES_DB}
-    username: ${CRA_POSTGRES_USER}
-    password: ${CRA_POSTGRES_PASS}
+    url: jdbc:postgresql://${CRA_POSTGRES_HOST:localhost}:${CRA_POSTGRES_PORT:5432}/${CRA_POSTGRES_DB:default}
+    driver-class-name: org.postgresql.Driver
+    username: ${CRA_POSTGRES_USER:postgres}
+    password: ${CRA_POSTGRES_PASS:secret}
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+springdoc:
+  api-docs.enabled: false
+  swagger-ui.enabled: false
